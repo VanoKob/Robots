@@ -68,7 +68,11 @@ public class GameVisualizer extends JPanel
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
     }
-    
+
+    public Point getTargetPoint() {
+        return new Point(m_targetPositionX, m_targetPositionY);
+    }
+
     protected void onRedrawEvent()
     {
         EventQueue.invokeLater(this::repaint);

@@ -68,6 +68,10 @@ public class LogWindowSource {
         return m_messages.size();
     }
 
+    public int getCountListener() {
+        return m_listeners.size();
+    }
+
     public Iterable<LogEntry> range(int startFrom, int count) {
         ArrayList<LogEntry> range = new ArrayList<>(m_messages);
         int end = Math.min(startFrom + count, range.size());
