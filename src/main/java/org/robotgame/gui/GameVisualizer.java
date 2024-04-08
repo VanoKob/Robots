@@ -92,18 +92,22 @@ public class GameVisualizer extends JPanel
         
         return asNormalizedRadians(Math.atan2(diffY, diffX));
     }
-    
-    protected void onModelUpdateEvent()
+
+    public void onModelUpdateEvent()
     {
-        double distance = distance(m_targetPositionX, m_targetPositionY, 
-            m_robotPositionX, m_robotPositionY);
-        if (distance < 0.5)
+        m_targetPositionX = (int) applyLimits(m_targetPositionX, 0, this.getWidth()); // Чтоб таргет не уходил за диапазон
+        m_targetPositionY = (int) applyLimits(m_targetPositionY, 0, this.getHeight());
+
+        double distance = distance(m_targetPositionX, m_targetPositionY,
+                m_robotPositionX, m_robotPositionY);
+        if (distance < 7)
         {
             return;
         }
-        double velocity = maxVelocity;
+
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
+
         if (angleToTarget > m_robotDirection)
         {
             angularVelocity = maxAngularVelocity;
@@ -112,11 +116,8 @@ public class GameVisualizer extends JPanel
         {
             angularVelocity = -maxAngularVelocity;
         }
-        
-        moveRobot(velocity, angularVelocity, 10);
 
-        m_targetPositionX = (int) applyLimits(m_targetPositionX, 0, this.getWidth());
-        m_targetPositionY = (int) applyLimits(m_targetPositionY, 0, this.getHeight());
+        moveRobot(maxVelocity, angularVelocity, 10);
     }
     
     private static double applyLimits(double value, double min, double max)
@@ -130,6 +131,7 @@ public class GameVisualizer extends JPanel
     
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
+        m_robotDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
         double newX = m_robotPositionX + velocity / angularVelocity * 
