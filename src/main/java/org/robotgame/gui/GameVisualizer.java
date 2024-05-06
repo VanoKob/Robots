@@ -95,12 +95,12 @@ public class GameVisualizer extends JPanel
 
     public void onModelUpdateEvent()
     {
-        m_targetPositionX = (int) applyLimits(m_targetPositionX, 0, this.getWidth()); // Чтоб таргет не уходил за диапазон
+        m_targetPositionX = (int) applyLimits(m_targetPositionX, 0, this.getWidth());
         m_targetPositionY = (int) applyLimits(m_targetPositionY, 0, this.getHeight());
 
         double distance = distance(m_targetPositionX, m_targetPositionY,
                 m_robotPositionX, m_robotPositionY);
-        if (distance < 7)
+        if (distance < 0.5)
         {
             return;
         }

@@ -3,16 +3,10 @@ package org.robotgame.gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import org.robotgame.log.Logger;
 
@@ -39,24 +33,42 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                int result = JOptionPane.showConfirmDialog(MainApplicationFrame.this,
+                        "Вы уверены, что хотите выйти?",
+                        "Подтверждение", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
     }
-    
+
+    protected GameWindow createGameWindow()
+    {
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setSize(400,  400);
+        return gameWindow;
+    }
+
     protected LogWindow createLogWindow()
     {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
+
+
     
     protected void addWindow(JInternalFrame frame)
     {
@@ -113,14 +125,34 @@ public class MainApplicationFrame extends JFrame
         return menuItem;
     }
 
+    private JMenuItem createExitMenuItem() {
+        JMenuItem exitMenuItem = new JMenuItem("Выход");
+        exitMenuItem.setMnemonic(KeyEvent.VK_T);
+        exitMenuItem.addActionListener((event) -> {
+            int result = JOptionPane.showConfirmDialog(null,
+                    "Вы уверены, что хотите выйти?", "Подтверждение",
+                    JOptionPane.YES_NO_OPTION);
+            if (result == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+
+        exitMenuItem.setPreferredSize(new Dimension(62, 20));
+        exitMenuItem.setMaximumSize(new Dimension(62, 20));
+
+        return exitMenuItem;
+    }
+
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
         JMenu lookAndFeelMenu = createLookAndFeelMenu();
         JMenu testMenu = createTestMenu();
+        JMenuItem exitMenuItem = createExitMenuItem();
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        menuBar.add(exitMenuItem);
 
         return menuBar;
     }
