@@ -57,7 +57,6 @@ public class GameVisualizer extends JPanel implements ActionListener
                     }
                 } else {
                     if (key == KeyEvent.VK_SPACE) {
-                        gameLogic.inGame = true;
                         gameLogic.restart();
                     }
                 }

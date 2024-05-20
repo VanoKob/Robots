@@ -10,6 +10,7 @@ public class GameLogic {
     }
 
     protected void restart() {
+        inGame = true;
         pacmanPlayer.x = 200;
         pacmanPlayer.y = 200;
         ghostPlayer.x = 0;
